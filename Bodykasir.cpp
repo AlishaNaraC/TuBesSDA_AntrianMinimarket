@@ -136,7 +136,15 @@ bool FSearchB (ListB B, addressB bar){
 /**** PRIMITIF BERDASARKAN NILAI ****/
 /**** Penambahan Elemen ****/
 void InsVLastP (ListP *P, infotype plgn){
-    // keanu
+    	/* Kamus Lokal */
+	addressP Pel;
+	
+	/* Algoritma */
+	Pel = AlokasiP (plgn);
+	if (P != NULL)
+	{
+		InsertLastP (&(*L), Pel);
+	}
 }
 
 void InsVLastB (ListB *B, infotype brg, int qty){
@@ -151,7 +159,14 @@ void InsVLastB (ListB *B, infotype brg, int qty){
 
 /**** Penghapusan Elemen ****/
 void DelVFirstP (ListP *P, infotype *plgn){
-    // keanu
+	/* Kamus Lokal */
+	addressP Pel;
+	
+	/* Algoritma */
+	Pel = *P.head;
+	*plgn = Pel.infoP;
+	*P.head = *P.head.after;
+	DeAlokasiP (Pel);
 }
 
 void DelVFirstB (ListB *B, infotype *brg){
@@ -165,7 +180,14 @@ void DelVFirstB (ListB *B, infotype *brg){
 }
 
 void DelVLastP (ListP *P, infotype *plgn){
-    // keanu
+    /* Kamus Data */
+	addressP PelDel;
+	
+	/* Algoritma */
+	PelDel = *P.tail;
+	DelLastP (&(*P), &PelDel);
+	(*plgn) = PelDel.infoP;
+	DeAlokasiP (PelDel);
 }
 
 void DelVLastB (ListB *B, infotype *brg) {
@@ -181,7 +203,21 @@ void DelVLastB (ListB *B, infotype *brg) {
 /**** PRIMITIF BERDASARKAN ALAMAT ****/
 /**** Penambahan elemen berdasarkan alamat ****/
 void InsertLastP (ListP *P, addressP pel){
-    // keanu
+    /* Kamus Lokal */
+	addressP LastP;
+	
+	/* Algoritma */
+	if (*P.head != NULL)
+	{
+		LastP = *P.tail;
+		pel.before = LastP;
+		LastP.after = pel;
+		LastP = NULL;
+	} else
+	{
+		*P.head = pel;
+		*P.tail = pel;
+	}
 }
 
 void InsertLastB (ListB *B, addressB bar){
@@ -199,10 +235,12 @@ void InsertLastB (ListB *B, addressB bar){
 }
 
 /**** Penghapusan sebuah elemen ****/
-/*
+
 void DelFirstP (ListP *P, addressP *pel){
-    // keanu
-}*/
+   	/* Algoritma */
+	*pel = *P.head;
+	*P.head = *P.head.after;
+}
 
 void DelFirstB (ListB *B, addressB *bar) {
 	 *bar = (*B).first;
@@ -263,10 +301,24 @@ void DelAnyB (ListB *B, infotype brg){
     }
 }
 
-/*
 void DelLastP (ListP *P, addressP *pel){
-    // keanu
-}*/
+	/* Kamus Data */
+	addressP Prec;
+	
+	/* Algoritma */
+	Prec = *pel.before;
+	
+	if (Prec == NULL)
+	{
+		*P.tail = NULL;
+		*P.head = NULL;
+	} else
+	{
+		Prec.after = NULL;
+		*pel.before = NULL;
+		*P.tail = Prec;
+	}
+}
 
 void DelLastB (ListB *B, addressB *bar) {
 	 /* Kamus Lokal */
