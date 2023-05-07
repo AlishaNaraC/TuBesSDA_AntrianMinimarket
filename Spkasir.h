@@ -7,7 +7,7 @@
     Kelas       : 1B-D4IT
     Mata Kuliah : Struktur Data dan Algoritma
     Tugas       : Tugas Besar membuat program antrian pelanggan pada kassa di minimarket
-    Tanggal     : 27 Maret 2023 s.d. 
+    Tanggal     : 27 Maret 2023 s.d. 7 Mei 2023
 */
 
 #ifndef spkasir_H
@@ -15,27 +15,30 @@
 #include <stdbool.h>
 #include <stdio.h>
 #define jmlK 3
+#define NAMA 30
+#define Max_Barang 100
+#define Max_Nama_Barang 30
 
-typedef char *infotype;
-/*Start: */
+typedef char* infotype;
+typedef struct tElmtListP *addressP;
+typedef struct tElmtListB *addressB;
+
 /*--STRUKTUR DATA KASIR--*/
 // berbentuk array, sehingga jumlahnya sudah pasti, di program ini kasirnya 2.
-typedef struct tElmtListK *addressK;
-typedef struct tElmtListK{
-    infotype infoK;
-    addressK cust;   // pointer next dari kasir ke pelanggan pertama
+typedef struct{
+    char infoK[8];
+    addressP cust;   // pointer next dari kasir ke pelanggan pertama
 }ElmtListK;
 
-typedef ElmtListK ListK[jmlK];
+ElmtListK ListK[jmlK];
 
 /*--STRUKTUR DATA PELANGGAN--*/
 // berbentuk double linked list nrll. Memiliki head dan tail, serta pointer before dan after.
-typedef struct tElmtListP *addressP;
 typedef struct tElmtListP{
     infotype infoP;
     addressP before; // pointer untuk menunjuk ke pelanggan sebelumnya
     addressP after; // pointer untuk menunjuk ke pelanggan setelahnya
-    addressP cart; // pointer untuk menunjuk barang belanjaannya
+    addressB cart; // pointer untuk menunjuk barang belanjaannya
 } ElmtListP;
 
 typedef struct{
@@ -45,7 +48,6 @@ typedef struct{
 
 /*--STRUKTUR DATA BARANG BELANJA--*/
 // berbentuk double linked list nrll. memiliki first dan last, serta pointer prev dan next.
-typedef struct tElmtListB *addressB;
 typedef struct tElmtListB{
     infotype infoB;
     int qtyB;   
@@ -57,7 +59,16 @@ typedef struct{
     addressB first;
     addressB last;
 } ListB;
-/*Finish, dikerjakan pada tanggal: 28/03/2023*/
+
+/*--STRUKTUR DATA FILE BARANG BELANJA--*/
+typedef struct {
+    char nama[Max_Nama_Barang];
+    int harga;
+    int stok;
+} Barang;
+
+Barang listBarang[Max_Barang];
+int jumlahBarang=0;
 
 // kalau list pakai inisial (K, P, B)
 // kalau infotype pakai inisial (ksr, plgn, brg)
@@ -65,166 +76,114 @@ typedef struct{
 /*********** PROTOTYPE ****************/
 
 /**** Display ****/
-void DisplayMenuAwal();
-void DisplayMenuMasuk();
-void DisplayMenuKeluar();
-void DisplayMenuLanjutan();
-void DisplayMenuBelanja();
-void DisplayMenuKassa();
-void DisplayAturan();
+void warnateks(int warna);
+void gotoxy(int x, int y);
+void DisplayLoading();
+void loading(int bg, int fg, int panjang, int delay, int simbol[20]);
+void DisplayMenuAwal();     //niqa
+void DisplayMenuMasuk();    //alisha
+void DisplayMenuLanjutan(); //alisha
+void DisplayBelanja();      //keanu
+void DisplayAturan();       //alisha
+void DisplayMenuBelanja();  //alisha
+void DisplayAntri();        //alisha
+void DisplayThank();        //keanu
 
-/**** Predikat untuk test keadaan LIST  ****/
-// untuk pelanggan, mengecek apakah node pelanggan ada/tidak ada
-// untuk barang, mengecek apakah node barang pada seorang pelanggan ada/tidak ada
-bool ListEmptyP (ListP P);
-bool ListEmptyB (ListB B);
-/* Mengirim true jika List Kosong */
+/* ==================== KEBUTUHAN KASSA ==================== */
+/* IS : P sembarang */
+/* FS : Terbentuk List */
+void CreateListK();                                             //alisha
 
-/**** Konstruktor/Kreator List Kosong ****/
-// untuk membentuk list statis bagi kasir, dengan sudah terbentuk arraynya
-// untuk membentuk suatu list yang pointernya belum menunjuk kemana-mana bagi pelanggan dan barang
-void CreateListK (ListK *K);
-void CreateListP (ListP *P);
-void CreateListB (ListB *B);
-/* IS : L sembarang */
+/* IS : Terdapat ListK yang sudah dibuat */
+/* FS : menampilkan pada layar info dari ListK */
+void PrintInfoK();                                              //alisha
+
+/* IS : sudah ada elemen pada list lain dengan tipe struct yang sama */
+/* FS : elemen dari list lain berpindah ke list tujuan untuk dihubungkan dengan ListK[id].cust */
+void InsertToK(ListP *P, addressP pel, int id);                 //alisha
+
+
+/* ==================== KEBUTUHAN PELANGGAN ==================== */
+// mengirim true jika kosong
+bool ListEmptyP (ListP P);                                      //keanu
+
+/* IS : P sembarang */
 /* FS : Terbentuk List Kosong */
+void CreateListP (ListP *P);                                    //keanu
 
-/**** Manajemen Memory ****/
-// memori alokasi untuk pelanggan dan barang setiap ditambahkan
-addressP AlokasiP (infotype plgn);
-addressB AlokasiB (infotype brg, int qty);
-/* Mengirimkan address hasil alokasi sebuah elemen */
-/* Jika alokasi berhasil, maka address != Nil, 	   */
-/*	dan misalnya menghasilkan P, maka Info(P) = X, Next(P) = Nil */
-/* Jika alokasi gagal, mengirimkan Nil */
+/* Mengirimkan addressP hasil alokasi sebuah elemen */
+addressP AlokasiP (infotype plgn);                              //keanu
 
-// dealokasi memori untuk pelanggan dan barang setiap dikurangi
-void DeAlokasiP (addressP pel);
-void DeAlokasiB (addressB bar);
-/* IS : P terdefinisi */
-/* FS : P dikembalikan ke sistem */
-/* Melakukan dealokasi / pengembalian address P ke system */
-
-/**** Pencarian sebuah elemen List ****/
-// bagi kasir, ketika mencari kasir untuk mendealokasi pelanggan paling depan, 
-// untuk menghitung seberapa banyak antrian barang dan customer di kasir tersebut
-// bagi pelanggan dan barang, jika ingin mencari node di tengah-tengah
-int SearchK (ListK K, infotype ksr);
-addressP SearchP (ListP P, infotype plgn);
-addressB SearchB (ListB B, infotype brg);
-/* Mencari apakah ada elemen list dengan Info(P) = X */
+/* Mencari apakah ada elemen list dengan infoP = plgn */
 /* Jika ada, mengirimkan address elemen tsb. */
-/* Jika tidak ada, mengirimkan Nil */
+addressP SearchP (ListP P, infotype plgn);                      //alisha
 
-bool FSearchK (ListK K, addressK kas);
-bool FSearchP (ListP P, addressP pel);
-bool FSearchB (ListB B, addressB bar);
-/* Mencari apakah ada elemen list yang beralamat P */
-/* Mengirimkan true jika ada, false jika tidak ada */
-
-addressK SearchPrecK (ListK K, infotype ksr);
-addressP SearchPrecP (ListP P, infotype plgn);
-addressB SearchPrecB (ListB B, infotype brg);
-/* Mengirimkan address elemen sebelum elemen yang nilainya = X */
-/* Mencari apakah ada elemen list dengan Info(P) = X */
-/* Jika ada, mengirimkan address Prec, dengan Next(Prec) = P dan Info(P) = X */
-/* Jika tidak ada, mengirimkan Nil */
-/* Jika P adalah elemen pertama, maka Prec = Nil */
-/* Search dengan spesifikasi seperti ini menghindari */
-/* traversal ulang jika setelah Search akan dilakukan operasi lain */
-
-/**** PRIMITIF BERDASARKAN NILAI ****/
-/**** Penambahan Elemen ****/
-// untuk pelanggan dan barang, memasukkan node dari belakang
-void InsVLastP (ListP *P, infotype plgn);
-void InsVLastB (ListB *B, infotype brg, int qty);
-/* IS : L mungkin Kosong */
+/* IS : P mungkin Kosong */
 /* FS : melakukan alokasi sebuah elemen dan */
 /* menambahkan elemen list di akhir (elemen terakhir adalah yang baru) */
-/* bernilai X jika alokasi berhasil. Jika alokasi gagal IS = FS */
- 
-/**** Penghapusan Elemen ****/
-// untuk pelanggan dan barang, mengeluarkan node dari depan
-// delete awal untuk pelanggan, berarti sudah selesai transaksi di kassa
-void DelVFirstP (ListP *P, infotype *plgn);
-void DelVFirstB (ListB *B, infotype *brg);
-/* IS : L TIDAK Kosong */
-/* FS : Elemen pertama List dihapus, nilai info disimpan ke X */
+void InsVLastP (ListP *P, infotype plgn);                       //alisha
+
+/* IS : P sembarang, pel sudah dialokasi */
+/* FS : pel ditambahkan sebagai elemen terakhir yang baru */
+void InsertLastP (ListP *P, addressP pel);                      //alisha
+
+/* IS : P TIDAK Kosong */
+/* FS : Elemen pertama List dihapus, nilai info disimpan ke plgn */
 /* 	dan alamat elemen pertama di dealokasi */
-
-// untuk pelanggan dan barang
-// delete akhir untuk pelanggan, bisa jadi ingin mengubah belanjaan atau tidak jadi belanja
-void DelVLastP (ListP *P, infotype *plgn);
-void DelVLastB (ListB *B, infotype *brg);
-/* IS : L TIDAK Kosong */
-/* FS : Elemen terakhir list dihapus : nilai info disimpan pada X */
-/* 	dan alamat elemen terakhir di dealokasi */
-
-/**** PRIMITIF BERDASARKAN ALAMAT ****/
-/**** Penambahan elemen berdasarkan alamat ****/
-// untuk pelanggan dan barang antri dari belakang
-void InsertLastP (ListP *P, addressP pel);
-void InsertLastB (ListB *B, addressB bar);
-/* IS : L sembarang, P sudah dialokasi */
-/* FS : P ditambahkan sebagai elemen terakhir yang baru */
-
-/**** Penghapusan sebuah elemen ****/
-// untuk pelanggan paling depan dan barang pertama dalam keranjang
-// bagi pelanggan ketika transaksi dengan kassa sudah selesai
-void DelFirstP (ListP *P, addressP *pel);
-void DelFirstB (ListB *B, addressB *bar);
-/* IS : L TIDAK kosong */
-/* FS : P adalah alamat elemen pertama list sebelum penghapusan */
-/*	elemen list berkurang satu (mungkin menjadi kosong) */
-/* First elemen yang baru adalah suksessor elemen pertama yang lama */
-
-// barang ditengah node tidak jadi dibeli
-// customer di tengah antrian tidak jadi belanja atau ingin mengubah barang belanjaan
-void DelAnyP (ListP *P, infotype plgn);
-void DelAnyB (ListB *B, infotype brg);
-/* IS : L sembarang */
-/* FS : Jika ada elemen list beraddress P, dengan Info(P) = X */
-/* 	Maka P dihapus dari list dan di dealokasi */
-/* Jika tidak ada elemen list dengan Info(P) = X, maka list tetap */
-/* List mungkin menjadi kosong karena penghapusan */
-
-//  berkaitan dengan DelVLast
-// bagi pelanggan jika ingin mengubah barang belanja atau tidak jadi belanja
-void DelLastP (ListP *P, addressP *pel);
-void DelLastB (ListB *B, addressB *bar);
-/* IS : L TIDAK kosong */
-/* FS : P adalah alamat elemen terakhir list sebelum penghapusan */
-/*	Elemen list berkurang satu (mungkin menjadi kosong) */
-/* Last elemen baru adalah predesessor elemen terakhir yang lama, jika ada */
+void DelVFirstP (ListP *P, infotype *plgn);                     //alisha, belum digunakan
 
 
-/**** PROSES SEMUA ELEMEN LIST  ****/
-// hanya menampilkan list kasir
-void PrintInfoK (ListK K);  
-// hanya menampilkan list pelanggan yang terdapat di minimarket dari kassa tertentu
-void PrintInfoP (ListP P);
-// hanya menampilkan list barang yang sudah dipilih oleh pelanggan tertentu
-void PrintInfoB (ListB B);
-// menampilkan seluruh kasir serta seluruh pelanggan pada setiap kasir
-void PrintInfoKP (ListK K, ListP P);
-// menampilkan seluruh pelanggan serta seluruh barang belanja
-void PrintInfoPB (ListP P, ListB B);
-// menampilkan seluruh kasir, seluruh pelanggan yang antri beserta barang belanja yang sudah dipilih
-void PrintAll (ListK K, ListP P, ListB B);
-/* IS : L mungkin kosong */
-/* FS : Jika List tidak kosong, semua info yang disimpan pada elemen list */
-/*	diprint. Jika list kosong, hanya menuliskan "List Kosong" */
+/* ==================== KEBUTUHAN BARANG ==================== */
+// mengirim true jika kosong
+bool ListEmptyB (ListB B);                                      //niqa
 
-// update jumlah barang dari node barang yang sudah ada pada suatu pelanggan
-void UpdateQtyB(ListB B, addressB bar, int qty);
-// menghitung jumlah atau kuantitas dari barang
-int CountQtyB(ListB B, addressB bar);
-// menghitung jumlah pelanggan dari kassa
-int CountP(ListP P, int indexK);
-// jangan lupa untuk menyimpan data barang di minimarket ke dalam file. dapat dibaca, ditambah, dihapus, diubah
+/* IS : B sembarang */
+/* FS : Terbentuk List Kosong */
+void CreateListB (ListB *B);                                    //niqa
 
-/***************************************/
-/*******  PROSES TERHADAP LIST  ********/
-/***************************************/
+/* Mengirimkan addressB hasil alokasi sebuah elemen */
+addressB AlokasiB (infotype brg, int qty);                      //niqa
+
+/* Mencari apakah ada elemen list dengan infoB = brg  */
+/* Jika ada, mengirimkan address elemen tsb. */
+addressB SearchB (addressP pel, infotype brg);                  //niqa
+
+/* IS : mendapatkan alamat pelanggan */
+/* FS : melakukan alokasi sebuah elemen dan */
+/* menambahkan elemen list di akhir (elemen terakhir adalah yang baru) */
+void InsVLastB(addressP pel, infotype brg, int qty);            //alisha
+
+/* IS : mendapatkan alamat pelanggan, bar sudah dialokasi */
+/* FS : bar ditambahkan sebagai elemen terakhir yang baru */
+void InsertLastB(addressP pel, addressB bar);                   //alisha
+
+/* IS : barang pada pelanggan tidak kosong */
+/* FS : barang dengan infotype brg didealokasi */
+void DelAnyB(addressP pel, infotype brg);                       //keanu
+
+/* IS : sudah ada barang dengan jumlah yang dipilih */
+/* FS : jumlah barang atau qty berubah */
+void updateQty(addressP pel, infotype brg, int qty);            //keanu
+
+
+/* ==================== KEBUTUHAN LAINNYA ==================== */
+/* Mengirimkan infotype hasil alokasi sebuah elemen */
+infotype AlokasiInfo();                                         //alisha
+
+/* IS : Terdapat ListK dan ListP yang sudah dibuat */
+/* FS : menampilkan pada layar info dari ListK dan ListP */
+void PrintInfoKP (ListP P1, ListP P2, ListP P3, ListP temp);    //alisha
+
+/* IS : Terdapat ListP dan ListB yang sudah dibuat */
+/* FS : menampilkan pada layar info dari ListP dan ListB */
+void PrintInfoPB (ListP P, int id);                             //keanu
+
+/* IS : terdapat file txt yang akan dibuka */
+/* FS : melakukan pemisahan string */
+void LoadBFromFile();                                           //niqa
+
+/* IS : terdapat file txt yang stringnya sudah di format */
+/* FS : meanmpilkan pada layar, info dari file txt */
+void PrintB();                                                  //niqa
 
 #endif
