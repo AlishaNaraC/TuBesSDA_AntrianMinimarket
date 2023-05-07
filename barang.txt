@@ -1,0 +1,16 @@
+Sabun;20000;3
+Beras;50000;10
+Gula pasir;12000;20
+Minyak goreng;25000;15
+Telur ayam;20000;30
+Keripik;50000;8
+Ikan segar;35000;12
+Sosis sapi;45000;5
+Kacang almond;65000;4
+Kismis;30000;7
+Jeruk;5000;40
+Apel;10000;25
+Pisang;8000;35
+Sayuran campur;20000;15
+Tepung terigu;15000;25
+Susu ultra;18000;20
