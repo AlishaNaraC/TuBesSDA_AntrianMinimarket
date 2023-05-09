@@ -8,6 +8,7 @@
     Mata Kuliah : Struktur Data dan Algoritma
     Tugas       : Tugas Besar membuat program antrian pelanggan pada kassa di minimarket
     Tanggal     : 27 Maret 2023 s.d. 7 Mei 2023
+                  Update 9 Mei 2023
 */
 
 #ifndef spkasir_H
@@ -77,10 +78,10 @@ int jumlahBarang=0;
 
 /**** Display ****/
 void warnateks(int warna);
-void gotoxy(int x, int y);
-void DisplayLoading();
-void loading(int bg, int fg, int panjang, int delay, int simbol[20]);
-void DisplayMenuAwal();     //niqa
+// void gotoxy(int x, int y);
+// void DisplayLoading();
+// void loading(int bg, int fg, int panjang, int delay, int simbol[20]);
+void DisplayMenuAwal();     //alisha & niqa
 void DisplayMenuMasuk();    //alisha
 void DisplayMenuLanjutan(); //alisha
 void DisplayBelanja();      //keanu
@@ -90,13 +91,17 @@ void DisplayAntri();        //alisha
 void DisplayThank();        //keanu
 
 /* ==================== KEBUTUHAN KASSA ==================== */
-/* IS : P sembarang */
-/* FS : Terbentuk List */
+/* IS : elemen dari array belum terisi */
+/* FS : Terbentuk List dengan array yang sudah terisi elemen */
 void CreateListK();                                             //alisha
 
 /* IS : Terdapat ListK yang sudah dibuat */
 /* FS : menampilkan pada layar info dari ListK */
 void PrintInfoK();                                              //alisha
+
+/* IS : Terdapat ListK dan ListP yang sudah dibuat */
+/* FS : menampilkan pada layar info dari salah satu ListK */
+void PrintCustK (ListP P, int id);                              //keanu
 
 /* IS : sudah ada elemen pada list lain dengan tipe struct yang sama */
 /* FS : elemen dari list lain berpindah ke list tujuan untuk dihubungkan dengan ListK[id].cust */
@@ -105,7 +110,7 @@ void InsertToK(ListP *P, addressP pel, int id);                 //alisha
 
 /* ==================== KEBUTUHAN PELANGGAN ==================== */
 // mengirim true jika kosong
-bool ListEmptyP (ListP P);                                      //keanu
+bool ListEmptyP (ListP P);                                      //niqa
 
 /* IS : P sembarang */
 /* FS : Terbentuk List Kosong */
@@ -130,8 +135,9 @@ void InsertLastP (ListP *P, addressP pel);                      //alisha
 /* IS : P TIDAK Kosong */
 /* FS : Elemen pertama List dihapus, nilai info disimpan ke plgn */
 /* 	dan alamat elemen pertama di dealokasi */
-void DelVFirstP (ListP *P, infotype *plgn);                     //alisha, belum digunakan
+void DelVFirstP (ListP *P, int id);                             //keanu
 
+// void DelAnyP (ListP *P, infotype plgn)
 
 /* ==================== KEBUTUHAN BARANG ==================== */
 // mengirim true jika kosong
@@ -142,11 +148,11 @@ bool ListEmptyB (ListB B);                                      //niqa
 void CreateListB (ListB *B);                                    //niqa
 
 /* Mengirimkan addressB hasil alokasi sebuah elemen */
-addressB AlokasiB (infotype brg, int qty);                      //niqa
+addressB AlokasiB (infotype brg, int qty);                      //keanu
 
 /* Mencari apakah ada elemen list dengan infoB = brg  */
 /* Jika ada, mengirimkan address elemen tsb. */
-addressB SearchB (addressP pel, infotype brg);                  //niqa
+addressB SearchB (addressP pel, infotype brg);                  //alisha
 
 /* IS : mendapatkan alamat pelanggan */
 /* FS : melakukan alokasi sebuah elemen dan */
@@ -160,6 +166,10 @@ void InsertLastB(addressP pel, addressB bar);                   //alisha
 /* IS : barang pada pelanggan tidak kosong */
 /* FS : barang dengan infotype brg didealokasi */
 void DelAnyB(addressP pel, infotype brg);                       //keanu
+
+/* IS : barang pada pelanggan tidak kosong */
+/* FS : Delete semua elemen barang dan di dealokasi*/
+void DelAllB(addressP pel);                                     //keanu
 
 /* IS : sudah ada barang dengan jumlah yang dipilih */
 /* FS : jumlah barang atau qty berubah */
@@ -183,7 +193,10 @@ void PrintInfoPB (ListP P, int id);                             //keanu
 void LoadBFromFile();                                           //niqa
 
 /* IS : terdapat file txt yang stringnya sudah di format */
-/* FS : meanmpilkan pada layar, info dari file txt */
+/* FS : menampilkan pada layar, info dari file txt */
 void PrintB();                                                  //niqa
+
+// int CountQtyB
+// int CountP(ListP P, int indexK);
 
 #endif
