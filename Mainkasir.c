@@ -30,7 +30,7 @@ int main(){
     infotype kodeP, brg;
     addressP cariP;
     addressB cariB;
-    int opsiawal, opsimasuk, opsibelanja, opsisdhantri, opsikassa, qty;
+    int opsiawal, opsimasuk, opsibelanja, opsisdhantri, opsikassa, qty, opsilainnya;
     bool done=false, adabrg=false;
     char opsitambah, opsiantri, opsi;
     // addressP cariP;
@@ -142,8 +142,7 @@ int main(){
                                         goto belanjalagi;
                                     }
                                     printf("Tekan apapun untuk melanjutkan...");
-                                    getch();
-                                    
+                                    getch();                                    
                                 }
                             }
                             break;
@@ -218,6 +217,7 @@ int main(){
                                 printf("---- PENGEMBALIAN BARANG ----\n\n");
                                 ulangkode3:
                                 printf("Masukkan kode pelangganmu: ");
+                                kodeP = AlokasiInfo();      //ini baru ditambah
                                 scanf("%s", kodeP);
 
                                 cariP = SearchP(daftartemp, kodeP);
@@ -264,7 +264,7 @@ int main(){
                             goto belanjalagi;
                         case 5:
                             if(adabrg){
-                                // printinfo yg ada rincian harga
+                                // printinfo yg ada total jumlah barang 
                                 DisplayAntri();
                                 printf("\n");
                                 antri:
@@ -338,18 +338,91 @@ int main(){
                 }
                 case 2:
                     printf("-~-~- DAFTAR PELANGGAN -~-~-\n\n");
-                    // if(ListEmptyP){
-                    //     printf("\t\t\t\tBelum ada pelanggan di 2CC-Mart\n");
-                    // }else{
-                    //     PrintInfoKP(daftarP1, daftarP2, daftarP3, daftartemp);
-                    // }
                     PrintInfoKP(daftarP1, daftarP2, daftarP3, daftartemp);
                     printf("Tekan apapun untuk melanjutkan...");
                     getch();
+                    goto masuk;
                     break;
                 case 3:
-                    printf("-~-~- OPSI LANJUTAN PELANGGAN -~-~-\n\n");
+                    lainnya:
+                    printf("-~-~- AKTIVITAS PELANGGAN -~-~-\n\n");
                     DisplayMenuLanjutan();
+                    scanf("%d", &opsilainnya);
+                    
+                    switch(opsilainnya){
+                    	case 1:
+                            printf("---- SELESAI TRANSAKSI ----\n\n");
+                    		PrintInfoKP(daftarP1, daftarP2, daftarP3, daftartemp);
+                    		printf("Pilih Kassa Untuk Melakukan Proses Transaksi: ");
+                    		scanf("%d", &opsikassa);
+	                    	if(opsikassa == 1){
+//	                    			printf("Apakah anda ingin melanjutkan proses transaksi (y/n)? ");
+//	                    			opsitambah = getche();
+//	                    			if((opsitambah == 'y') || (opsitambah == 'Y')){
+	                   				DelVFirstP (&daftarP1, opsikassa-1);
+	                   				printf("\nTekan apapun untuk melanjutkan...");
+	                           		getch();
+//								}
+							} else if(opsikassa == 2){
+								DelVFirstP (&daftarP2, opsikassa-1);
+	                   			printf("\nTekan apapun untuk melanjutkan...");
+	                           	getch();
+							} else if(opsikassa == 3){
+								DelVFirstP (&daftarP3, opsikassa-1);
+	                   			printf("\nTekan apapun untuk melanjutkan...");
+	                           	getch();									
+							} else {
+								printf("\nMasukkan Kassa yang valid !\n");
+								goto lainnya;
+							}
+							break;
+							
+						case 2:
+							printf("---- OPSI PELANGGAN ----\n");
+							DisplayPelangganKeluar();
+							scanf("%d", &opsilainnya);
+							
+							switch(opsilainnya){
+								case 1:
+									printf("Apakah yakin anda akan membatalkan belanja (y/n)? ");
+									opsi = getche();
+									if((opsi == 'Y') || (opsi == 'y')){
+										PrintInfoKP(daftarP1, daftarP2, daftarP3, daftartemp);
+										printf("Pilih antrian kassa : ");
+										scanf("%d", &opsikassa);
+										if(opsikassa == 1){
+											PrintCustK (daftarP1, opsikassa - 1);
+											printf("Pilih pelanggan yang ingin dibatalkan: ");
+											kodeP = AlokasiInfo();
+											scanf("%s", kodeP);
+											
+											if(daftarP1.head != NULL){
+												DelAnyP (&daftarP1, kodeP);
+											} else {
+												printf("Pelanggan tidak ditemukan\n");
+											}
+											printf("\nTekan apapun untuk melanjutkan...");
+	                          				getch();
+										} else if(opsikassa == 2){
+											PrintCustK (daftarP2, opsikassa - 1);
+										} else if(opsikassa == 3){
+											PrintCustK (daftarP3, opsikassa - 1);						
+										} else {
+											
+										}
+									}
+									break;
+									
+								case 2:
+									
+									break;
+									
+								case 0:
+									goto lainnya;
+									break;
+							}							
+							break;							
+						}
                     break;
                 case 0:
                     goto awal;
@@ -370,7 +443,7 @@ int main(){
         case 0:
             printf("\n\n\n"); 
             printf("---------------------------------------------------\n"\
-                "Apakah anda ingin keluar dari 2CC-Mart (y/n)? ");
+                   "Apakah anda ingin keluar dari 2CC-Mart (y/n)? ");
             opsi = getche();
             system("cls");
             printf("\n");
