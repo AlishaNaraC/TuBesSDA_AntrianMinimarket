@@ -121,12 +121,12 @@ void DisplayMenuLanjutan(){     // belum dibuat alurnya
 void DisplayPelangganKeluar(){     // belum dibuat alurnya
     // system("cls");
     printf("\n\n\n"); 
-    printf("\t\t\t\t\t -----------------------------------\n");
-    printf("\t\t\t\t\t|  1. Batal Belanja                 |\n");
-    printf("\t\t\t\t\t|  2. Kembali Berbelanja            |\n");
-    printf("\t\t\t\t\t|  0. Kembali                       |\n");
-    printf("\t\t\t\t\t -----------------------------------\n");
-    printf("\t\t\t\t\tPilih opsi: ");
+    printf(" ------------------------------\n");
+    printf("|    1. Batal Belanja          |\n");
+    printf("|    2. Kembali Berbelanja     |\n");
+    printf("|    0. Kembali                |\n");
+    printf(" ------------------------------\n");
+    printf("Pilih opsi: ");
 }
 
 void DisplayBelanja(){
@@ -187,9 +187,9 @@ void DisplayAntri(){
     printf(" CCCCCCCCCCCC\t CCCCCCCCCCCC\t CCCCCCCCCCCC\n");
     printf("CCCCCCCCCCCCCC\tCCCCCCCCCCCCCC\tCCCCCCCCCCCCCC\n");
     printf("CCCCCCCCCCCCCC\tCCCCCCCCCCCCCC\tCCCCCCCCCCCCCC\n\n");
-    printf("-------------------------------\n");
-    printf("    SILAKAN ANTRI DI KASSA\n");
-    printf("-------------------------------\n");
+    printf("       -------------------------------\n");
+    printf("           SILAKAN ANTRI DI KASSA\n");
+    printf("       -------------------------------\n");
     printf("Tekan apapun untuk melanjutkan...");
     getch();
 }
@@ -197,13 +197,13 @@ void DisplayAntri(){
 void DisplayThank(){
     // system("cls");
     printf("\n\n\n"); 
-    printf(" 	 CCC\n");
-	printf(" 	C  C\n");
-	printf(" CCCC  C  CCCCCC\n");
-	printf(" C  C  C        C\n");
-	printf(" C  C  C        C\n");
-	printf(" C  C  C        C\n");
-	printf(" CCCC   CCCCCCCC\n\n");
+    printf(" 	             CCC\n");
+	printf(" 	            C  C\n");
+	printf("          CCCC  C  CCCCCC\n");
+	printf("          C  C  C        C\n");
+	printf("          C  C  C        C\n");
+	printf("          C  C  C        C\n");
+	printf("          CCCC   CCCCCCCC\n\n");
 	printf(" ---------------------------------\n");
 	printf("   TERIMA KASIH SUDAH BERBELANJA\n");
 	printf("    	    DI 2CC-MART\n");
