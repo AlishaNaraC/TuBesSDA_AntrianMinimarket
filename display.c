@@ -92,14 +92,14 @@ void DisplayMenuAwal(){
 
 void DisplayMenuMasuk(){
     // system("cls");
-    printf("\n\n\n"); 
+   printf("\n\n\n"); 
     printf(" --------------------------------\n");
     printf("|           2CC - MART           |\n");
     printf("|       - SELAMAT DATANG -       |\n");
     printf("|                                |\n");
     printf("|  1. Tambah pelanggan           |\n");
     printf("|  2. Tampilkan daftar pelanggan |\n");
-    printf("|  3. Lainnya                    |\n");
+    printf("|  3. Aktivitas antrian          |\n");
     printf("|  0. Kembali                    |\n");
     printf(" --------------------------------\n");
     printf("Pilih opsi: ");
@@ -107,15 +107,26 @@ void DisplayMenuMasuk(){
 
 void DisplayMenuLanjutan(){     // belum dibuat alurnya
     // system("cls");
+    printf("\n"); 
+    printf("[digunakan ketika pelanggan ingin melakukan\n   suatu perilaku saat sedang mengantri]\n\n");
+    printf("        --------------------------\n");
+    printf("       |  1. Selesai transaksi    |\n");
+    printf("       |  2. Keluar dari antrian  |\n");
+    printf("       |  0. Kembali              |\n");
+    printf("        --------------------------\n");
+    printf("       Pilih opsi: ");
+    getch();
+}
+
+void DisplayPelangganKeluar(){     // belum dibuat alurnya
+    // system("cls");
     printf("\n\n\n"); 
-    printf("[digunakan ketika pelanggan ingin melakukan suatu perilaku saat sedang mengantri]\n\n");
-    printf(" -----------------------------------\n");
-    printf("|  1. Selesai transaksi             |\n");
-    printf("|  2. Keluar dari antrian tengah    |\n");
-    printf("|  3. Keluar dari antrian belakang  |\n");
-    printf("|  0. Kembali                       |\n");
-    printf(" -----------------------------------\n");
-    printf("Pilih opsi: ");
+    printf("\t\t\t\t\t -----------------------------------\n");
+    printf("\t\t\t\t\t|  1. Batal Belanja                 |\n");
+    printf("\t\t\t\t\t|  2. Kembali Berbelanja            |\n");
+    printf("\t\t\t\t\t|  0. Kembali                       |\n");
+    printf("\t\t\t\t\t -----------------------------------\n");
+    printf("\t\t\t\t\tPilih opsi: ");
 }
 
 void DisplayBelanja(){
