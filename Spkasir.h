@@ -8,7 +8,7 @@
     Mata Kuliah : Struktur Data dan Algoritma
     Tugas       : Tugas Besar membuat program antrian pelanggan pada kassa di minimarket
     Tanggal     : 27 Maret 2023 s.d. 7 Mei 2023
-                  Update 9 Mei 2023
+                  Update 9 Mei 2023 s.d.
 */
 
 #ifndef spkasir_H
@@ -78,9 +78,6 @@ int jumlahBarang=0;
 
 /**** Display ****/
 void warnateks(int warna);
-// void gotoxy(int x, int y);
-// void DisplayLoading();
-// void loading(int bg, int fg, int panjang, int delay, int simbol[20]);
 void DisplayMenuAwal();     //alisha & niqa
 void DisplayMenuMasuk();    //alisha
 void DisplayMenuLanjutan(); //alisha
@@ -89,6 +86,7 @@ void DisplayAturan();       //alisha
 void DisplayMenuBelanja();  //alisha
 void DisplayAntri();        //alisha
 void DisplayThank();        //keanu
+void DisplayPelangganKeluar(); //keanu
 
 /* ==================== KEBUTUHAN KASSA ==================== */
 /* IS : elemen dari array belum terisi */
@@ -105,8 +103,11 @@ void PrintCustK (ListP P, int id);                              //keanu
 
 /* IS : sudah ada elemen pada list lain dengan tipe struct yang sama */
 /* FS : elemen dari list lain berpindah ke list tujuan untuk dihubungkan dengan ListK[id].cust */
-void InsertToK(ListP *P, addressP pel, int id);                 //alisha
+void InsertToK(ListP *P, ListP *Ptemp, addressP pel, int id);  //alisha
 
+/* IS : sudah ada elemen pada list lain dengan tipe struct yang sama */
+/* FS : elemen dari list yang sudah terhubung dengan ListK[id].cust berpindah ke list tujuan */
+void InsertToTemp(ListP *P, ListP *PTemp, addressP pel, int id); //keanu
 
 /* ==================== KEBUTUHAN PELANGGAN ==================== */
 // mengirim true jika kosong
@@ -137,7 +138,9 @@ void InsertLastP (ListP *P, addressP pel);                      //alisha
 /* 	dan alamat elemen pertama di dealokasi */
 void DelVFirstP (ListP *P, int id);                             //keanu
 
-// void DelAnyP (ListP *P, infotype plgn)
+/* IS : Pelanggan yang mengantri tidak kosong */
+/* FS : Delete Pelanggan dan di dealokasi */
+void DelAnyP (ListP *P, infotype plgn, int id);                 //keanu
 
 /* ==================== KEBUTUHAN BARANG ==================== */
 // mengirim true jika kosong
@@ -171,6 +174,10 @@ void DelAnyB(addressP pel, infotype brg);                       //keanu
 /* FS : Delete semua elemen barang dan di dealokasi*/
 void DelAllB(addressP pel);                                     //keanu
 
+/* IS : barang pada pelanggan tidak kosong */
+/* FS : Delete elemen pertama barang dan di dealokasi */
+void DelFirstB (addressP P, addressB pel);						//keanu
+
 /* IS : sudah ada barang dengan jumlah yang dipilih */
 /* FS : jumlah barang atau qty berubah */
 void updateQty(addressP pel, infotype brg, int qty);            //keanu
@@ -180,9 +187,11 @@ void updateQty(addressP pel, infotype brg, int qty);            //keanu
 /* Mengirimkan infotype hasil alokasi sebuah elemen */
 infotype AlokasiInfo();                                         //alisha
 
+infotype AlokasiInfoP();                                        //alisha
+
 /* IS : Terdapat ListK dan ListP yang sudah dibuat */
 /* FS : menampilkan pada layar info dari ListK dan ListP */
-void PrintInfoKP (ListP P1, ListP P2, ListP P3, ListP temp);    //alisha
+void PrintInfoKP (ListP temp);                                  //alisha
 
 /* IS : Terdapat ListP dan ListB yang sudah dibuat */
 /* FS : menampilkan pada layar info dari ListP dan ListB */
@@ -195,8 +204,5 @@ void LoadBFromFile();                                           //niqa
 /* IS : terdapat file txt yang stringnya sudah di format */
 /* FS : menampilkan pada layar, info dari file txt */
 void PrintB();                                                  //niqa
-
-// int CountQtyB
-// int CountP(ListP P, int indexK);
 
 #endif
