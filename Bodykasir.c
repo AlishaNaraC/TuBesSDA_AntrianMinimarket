@@ -8,10 +8,11 @@
     Mata Kuliah : Struktur Data dan Algoritma
     Tugas       : Tugas Besar membuat program antrian pelanggan pada kassa di minimarket
     Tanggal     : 27 Maret 2023 s.d. 7 Mei 2023
-                  Update 9 Mei 2023
+                  Update 9 Mei 2023 s.d.
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <limits.h>
 #include <malloc.h>
 #include <string.h>
@@ -49,11 +50,23 @@ void CreateListB (ListB *B){
 
 /**** Manajemen Memory ****/
 infotype AlokasiInfo(){
-    infotype nama = (infotype) malloc (sizeof(infotype)*NAMA);
-    if(nama == NULL){
+    infotype barang = (infotype) malloc (sizeof(infotype)*NAMA);
+    if(barang == NULL){
         printf("! MEMORI PENUH !\n");
     }
-    return(nama);
+    return(barang);
+}
+
+infotype AlokasiInfoP(){
+    static int i=0;
+    infotype kode = (infotype) malloc (sizeof(infotype)*NAMA);
+    if(kode == NULL){
+        printf("! MEMORI PENUH !\n");
+    }else{
+        sprintf(kode, "P%d",i+1);
+        i++;
+    }
+    return(kode);
 }
 
 addressP AlokasiP (infotype plgn){
@@ -170,32 +183,11 @@ void DelVFirstP (ListP *P, int id){
 		if (Pel != NULL){
 			free (Pel);
 		}
-		printf("Pelanggan yang bernama %s, telah melakukan pembayaran\n", *plgn);
+		printf("Pelanggan yang bernama %s, telah melakukan pembayaran dengan rincian barang diatas\n", *plgn);
 	} else{
 		printf("Tidak ada pelanggan yang mengantri\n");
 	}
 }
-// void DelVFirstP (ListP *P, infotype *plgn){
-//     /* Kamus Lokal */
-// 	addressP Pel;
-	
-// 	/* Algoritma */
-// 	Pel = (*P).head;
-// 	*plgn = (Pel)->infoP;
-// 	(*P).head = ((*P).head)->after;
-// 	DeAlokasiP (Pel);
-// }
-
-// void DelVLastP (ListP *P, infotype *plgn){
-//     /* Kamus Data */
-// 	addressP PelDel;
-	
-// 	/* Algoritma */
-// 	PelDel = (*P).tail;
-// 	DelLastP (&(*P), &PelDel);
-// 	(*plgn) = (PelDel)->infoP;
-// 	DeAlokasiP (PelDel);
-// }
 
 /**** PRIMITIF BERDASARKAN ALAMAT ****/
 /**** Penambahan elemen berdasarkan alamat ****/
@@ -231,7 +223,7 @@ void InsertLastB(addressP pel, addressB bar){
     }
 }
 
-void InsertToK(ListP *P, addressP pel, int id){
+void InsertToK(ListP *P, ListP *Ptemp, addressP pel, int id){
     // Kamus Lokal
     addressP temp;
 
@@ -245,16 +237,59 @@ void InsertToK(ListP *P, addressP pel, int id){
         (pel)->before = (*P).tail;
         (*P).tail = pel;
     }
+    (*Ptemp).head = NULL;
+    (*Ptemp).tail = NULL;
 }
 
-/**** Penghapusan sebuah elemen ****/
-// void DelFirstP (ListP *P, addressP *pel){
-//     /* Algoritma */
-// 	*pel = (*P).head;
-// 	(*P).head = ((*P).head)->after;
-// }
+void InsertToTemp(ListP *P, ListP *PTemp, addressP pel, int id){
+	// Kamus Lokal
+	addressP prec = NULL;
+	
+	// Algoritma
+	if (P != NULL){
+		InsertLastP (&(*PTemp), pel);
+	}
+	
+	if(ListEmptyP(*P)){
+		printf("Antrian masih kosong\n");
+	} else{ 
+		if ((pel)->before == NULL && (pel)->after == NULL) /* Hanya 1 elemen */
+		{
+			(*P).head = NULL;
+			ListK[id].cust = NULL;
+		} else if ((pel)->before == NULL) /* Ketemu di elemen 1 */
+		{
+			(*P).head = (pel)->after;
+			(pel)->after = NULL;
+			ListK[id].cust = (*P).head;
+		} else if ((pel)->after == NULL) /* Ketemu di elemen akhir */
+		{
+			(*P).tail = (pel)->before;
+			(pel)->before = NULL;
+			((*P).tail)->after = NULL;
+		} else 
+		{
+			prec = (pel)->before;
+			prec->after = (pel)->after;
+			((pel)->after)->before = prec;
+			pel->after = NULL;
+			pel->before = NULL;
+		}
+		printf("Pelanggan kembali berbelanja\n");
+		
+	}
+	
+}
 
-void DelAnyP (ListP *P, infotype plgn){         //BELUM BERES
+
+/**** Penghapusan sebuah elemen ****/
+void DelFirstB (addressP P, addressB pel){
+     /* Algoritma */
+ 	pel = (*P).cart;
+	(*P).cart = (*P).cart->next;
+}
+
+void DelAnyP (ListP *P, infotype plgn, int id){
  	/* Kamus Lokal */
  	addressP pel, prec=NULL, simpan;
  	bool ketemu=false;
@@ -271,18 +306,25 @@ void DelAnyP (ListP *P, infotype plgn){         //BELUM BERES
  		}
  	}
  	if(ketemu){
- 		//DelAllB(pel);
- 		if(prec == NULL && (pel)->after == NULL){
+ 		DelAllB(pel);
+ 		if(prec == NULL && (pel)->after == NULL) /* Hanya 1 elemen */
+		{
  			(*P).head = NULL;
- 			(pel)->after = NULL;
- 		}else if(prec == NULL){
+ 			ListK[id].cust = NULL;
+ 		}
+		else if(prec == NULL) /* Ketemu di elemen 1 */
+		{
  			(*P).head =(pel)->after;
  			(pel)->after = NULL;
- 		}else if((pel)->after == NULL){
- 			(*P).tail = NULL;
+ 		}
+		else if((pel)->after == NULL) /* Ketemu di elemen akhir */
+		{
+ 			(*P).tail = prec;
  			(pel)->before = NULL;
  			(prec)->after = NULL;
- 		}else{
+ 		}
+		else
+		{
  			(prec)->after = (pel)->after;
  			//pel =(pel)->after;
  			((pel)->after)->before = prec;
@@ -297,20 +339,18 @@ void DelAnyP (ListP *P, infotype plgn){         //BELUM BERES
 	 }
 }
 
-void DelAllB(addressP pel){             // BELUM BERES      
+void DelAllB(addressP pel){     
 	// Kamus Lokal
 	addressB barDel;
 	
 	//Algoritma
 	barDel = pel->cart;
 	while (barDel != NULL){
-//		DelFirstP (&(*pel), &barDel);
-//		*barDel = (*pel)->car;
-//		(*pel).cart = ((*pel).cart)->next;
+		DelFirstB (pel, barDel);
 		if (barDel != NULL){
 			free (barDel);
-			barDel = pel->cart;
 		}
+		barDel = pel->cart;
 	}
 	(*pel).cart = NULL;
 }
@@ -334,21 +374,13 @@ void DelAnyB(addressP pel, infotype brg){
         if((prec == NULL) && ((bar)->next == NULL)){    //hanya ada 1 node
             (*pel).cart = NULL;
         }else if((prec == NULL)){                       // merupakan node pertama
-			(*pel).cart = (bar)->next;            
-            // temp = (bar)->next;
-            // (*pel).cart = temp;
-            // (temp)->prev = NULL;
-            // (bar)->next = NULL;
+			(*pel).cart = (bar)->next;  
         }else if((bar)->next == NULL){                  // merupakan node terakhir
             (bar)->prev = NULL;
             (prec)->next = NULL;
         }else{
             (prec)->next = (bar)->next;
         	((bar)->next)->prev = prec;
-            // (bar)->next = NULL;
-            // (bar)->prev = NULL;
-            // ((bar)->next)->prev = prec;
-            // (prec)->next = (bar)->next;
         }
         if(bar != NULL){
         	free((bar)->infoB);
@@ -385,81 +417,83 @@ void updateQty(addressP pel, infotype brg, int qty){
 
 }
 
-// int CountQtyCurB(ListB B){
-// 	/* Kamus Lokal */
-// 	int qty=0;
-// 	addressB bar;
-
-// 	/* Algoritma */
-// 	bar = (B).first;
-// 	if(bar != NULL){
-// 		qty += (bar)->qtyB;
-// 		bar = (bar)->next;
-// 	}
-// 	return (qty);
-// }
-
-// int CountQtyAllB(ListB B, int id){
-// 	/* Kamus Lokal */
-// 	int qty=0;
-// 	addressP pel;
-// 	addressB bar;
-
-// 	/* Algoritma */
-// 	pel = ListK[id].cust;
-// 	bar = (pel)->cart;
-// 	while((pel)->after != NULL){
-// 		if(bar != NULL){
-// 			qty += (bar)->qtyB;
-// 			bar = (bar)->next;
-// 		}else{
-// 			(pel)->after;
-// 		}
-// 	}
-// 	return (qty);
-// }
-
-// int CountP(ListP P, int indexK){
-// 	/* Kamus Lokal */
-// 	int qtyP=0;
-// 	addressP pel;
-
-// 	/* Algoritma */
-// 	pel = ListK[indexK].cust;
-// 	while((pel)->after != NULL){
-// 		qtyP += 1;
-// 		pel = (pel)->after;
-// 	}
-// 	return(qtyP);
-// }
-
-// void DelLastP (ListP *P, addressP *pel){
-//     /* Kamus Data */
-// 	addressP Prec;
-	
-// 	/* Algoritma */
-// 	Prec = (addressP) (*pel)->before;
-	
-// 	if (Prec == NULL)
-// 	{
-// 		(*P).tail = NULL;
-// 		(*P).head = NULL;
-// 	} else
-// 	{
-// 		(Prec)->after = NULL;
-// 		(*pel)->before = NULL;
-// 		(*P).tail = Prec;
-// 	}
-// }
-
 
 void PrintInfoK (){
-	int i=0;
+	int i=0, p=0, b=0, hasil;
+    int simpanb[3]={0,0,0};
+    addressP pel;
+    addressB bar;
+
 	for(i; i<jmlK; i++){
-		if(ListK[i].infoK != NULL){
-			printf("%d. %s\n",i+1, ListK[i].infoK);
-		}
+		if(ListK[i].cust != NULL){
+			printf("%d. %s: \n",i+1, ListK[i].infoK);
+            pel = ListK[i].cust;
+            while (pel != NULL) {
+            bar = (pel)->cart;
+            printf("   %s <- ", (pel)->infoP);
+            
+                while (bar != NULL) {
+                    printf("(%s [%d]) ", (bar)->infoB, (bar)->qtyB);
+                    b += (bar)->qtyB;
+                    bar = (bar)->next;                    
+                }                
+                printf("\n");
+                pel = (pel)->after;
+                p++;
+            }
+            simpanb[i] = b;
+            printf("   Terdapat %d pelanggan dan %d total barang belanja pada %s", p, b, ListK[i].infoK);
+            p=0;
+            b=0;
+            printf("\n\n");
+		}else{
+            printf("%d. %s:-\n\n",i+1,ListK[i].infoK);
+        }
 	}
+    if(ListK[0].cust != NULL || ListK[1].cust != NULL || ListK[2].cust != NULL){
+        if(simpanb[0] != 0 && simpanb[1] != 0 && simpanb[2] !=0){
+            if(simpanb[0] < simpanb[1] && simpanb[0] < simpanb[2]){
+                printf("Anda direkomendasikan untuk ke kassa 1\n");
+            }else if(simpanb[1] < simpanb[0] && simpanb[1] < simpanb[2]){
+                printf("Anda direkomendasikan untuk ke kassa 2\n");
+            }else if(simpanb[2] < simpanb[0] && simpanb[2] < simpanb[1]){
+                printf("Anda direkomendasikan untuk ke kassa 3\n");
+            }else if(simpanb[0] == simpanb[1]){
+                if(simpanb[0] > simpanb[2]){
+                    printf("Anda direkomendasikan untuk ke kassa 3\n");
+                }else{
+                    printf("Anda direkomendasikan untuk ke kassa 1 atau kassa 2\n");
+                }
+            }else if(simpanb[1] == simpanb[2]){
+                if(simpanb[1] > simpanb[0]){
+                    printf("Anda direkomendasikan untuk ke kassa 1\n");
+                }else{
+                    printf("Anda direkomendasikan untuk ke kassa 2 atau kassa 3\n");
+                }
+            }else if(simpanb[0] == simpanb[2]){
+                if (simpanb[0] > simpanb[2]){
+                    printf("Anda direkomendasikan untuk ke kassa 2\n");
+                }else{
+                    printf("Anda direkomendasikan untuk ke kassa 1 atau kassa 3\n");
+                }
+                
+            }
+        }
+        
+        if(simpanb[1] == 0 && simpanb[2] == 0){
+            printf("Anda direkomendasikan untuk ke kassa 2 atau kassa 3\n");
+        }else if(simpanb[0] == 0 && simpanb[2] == 0){
+            printf("Anda direkomendasikan untuk ke kassa 1 atau kassa 3\n");
+        }else if(simpanb[0] == 0 && simpanb[1] == 0){
+            printf("Anda direkomendasikan untuk ke kassa 1 atau kassa 2\n");
+        }else if(simpanb[0] == 0){
+            printf("Anda direkomendasikan untuk ke kassa 1\n");
+        }else if(simpanb[1] == 0){
+            printf("Anda direkomendasikan untuk ke kassa 2\n");
+        }else if(simpanb[2] == 0){
+            printf("Anda direkomendasikan untuk ke kassa 3\n");
+        }
+    }
 }
 
 void PrintCustK (ListP P, int id){
@@ -486,8 +520,8 @@ void PrintCustK (ListP P, int id){
 	}
 }
 
-void PrintInfoKP (ListP P1, ListP P2, ListP P3, ListP temp){
-	addressP aTemp, aP1, aP2, aP3;
+void PrintInfoKP (ListP temp){
+	addressP  aP1, aP2, aP3;
     addressB B1, B2, B3;
     if (ListK[0].cust != NULL) {
         aP1 = ListK[0].cust;
@@ -547,9 +581,9 @@ void PrintInfoKP (ListP P1, ListP P2, ListP P3, ListP temp){
     }else{
 		printf("3. %s: - \n",(ListK[2]).infoK);
     }
-    if((temp).head == NULL){
+    if((temp).head == NULL && ListK[0].cust == NULL && ListK[1].cust == NULL && ListK[2].cust == NULL){
         printf("Belum ada pelanggan di 2CC-Mart\n");
-    }	
+    }
 }
 
 void PrintInfoPB (ListP P, int id){
@@ -564,7 +598,7 @@ void PrintInfoPB (ListP P, int id){
     if(bar == NULL){
         printf("Keranjang kosong...\n");
     }else{
-        printf("Isi keranjang belanja %s: \n",(pel)->infoP);
+        printf("\nKeranjang belanja %s: \n",(pel)->infoP);
         printf("-------------------------------------------\n");
         printf("| No |      Nama Barang      |   Jumlah   |\n");
         printf("-------------------------------------------\n");
