@@ -8,7 +8,7 @@
     Mata Kuliah : Struktur Data dan Algoritma
     Tugas       : Tugas Besar membuat program antrian pelanggan pada kassa di minimarket
     Tanggal     : 27 Maret 2023 s.d. 7 Mei 2023
-                  Update 9 Mei 2023
+                  Update 9 Mei 2023 s.d.
 */
 
 #include <stdio.h>
@@ -20,6 +20,9 @@
 
 #define LIGHT_BLUE 11
 #define WHITE 15
+#define	RED 12
+#define DARK_GREEN 3
+#define	YELLOW 14
 
 void warnateks(int warna) //modul yang berfungsi untuk memberi warna ke karakter
 { 
@@ -208,5 +211,6 @@ void DisplayThank(){
 	printf("   TERIMA KASIH SUDAH BERBELANJA\n");
 	printf("    	    DI 2CC-MART\n");
 	printf(" ---------------------------------\n");
-
+    printf("Tekan apapun untuk melanjutkan...");
+    getch();
 }
