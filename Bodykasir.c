@@ -8,7 +8,7 @@
     Mata Kuliah : Struktur Data dan Algoritma
     Tugas       : Tugas Besar membuat program antrian pelanggan pada kassa di minimarket
     Tanggal     : 27 Maret 2023 s.d. 7 Mei 2023
-                  Update 9 Mei 2023 s.d.
+                  Update 9 Mei 2023 s.d. 16 Mei 2023
 */
 
 #include <stdio.h>
@@ -648,4 +648,17 @@ void PrintB(){
             i+1, listBarang[i].nama, listBarang[i].harga, listBarang[i].stok);
     }
     printf("---------------------------------------------------\n");
+}
+
+bool cekB(infotype brg){
+    infotype valid[]={"Sabun", "Beras", "Gula_pasir", "Minyak_goreng", 
+                        "Telur_ayam", "Keripik", "Ikan_segar", "Sosis_sapi",
+                         "Kacang_almond", "Kismis", "Jeruk", "Apel", "Pisang",
+                         "Sayuran_campur", "Tepung_terigu", "Susu_ultra"};
+    for(int i=0; i<16; i++){
+        if(strcmpi(brg, valid[i])==0){
+            return true;
+        }
+    }
+    return false;
 }
