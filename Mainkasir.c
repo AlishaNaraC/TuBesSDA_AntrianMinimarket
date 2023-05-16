@@ -8,7 +8,7 @@
     Mata Kuliah : Struktur Data dan Algoritma
     Tugas       : Tugas Besar membuat program antrian pelanggan pada kassa di minimarket
     Tanggal     : 27 Maret 2023 s.d. 7 Mei 2023
-                  Update 9 Mei 2023 s.d.
+                  Update 9 Mei 2023 s.d. 13 Mei 2023
 */
 
 #include "spkasir.h"
@@ -84,28 +84,35 @@ int main(){
                             printf("\nDaftar Barang 2CC-MART\n");                                
                             PrintB();
                             printf("Silakan ketik nama barang: ");
-                            scanf("%s",brg);
-                            ulangqty:
-                            printf("Silakan masukkan jumlah barang: ");
-                            scanf("%d",&qty);
-
-                            if(qty == 0){
-                                printf("! Jumlah barang tidak boleh 0 !\n");
-                                goto ulangqty;
+                            scanf("%s", brg);
+                            if(!cekB(brg)){
+                                printf("%s tidak ditemukan pada etalase\n",brg);
+                                getch();
+                                goto ulangbrg;
                             }else{
-                                InsVLastB(cariP,brg,qty);
-                                adabrg = true;
-                                printf("Barang berhasil ditambahkan ke keranjang\n");
-                                printf("Apakah anda ingin menambah barang lagi (y/n)? ");
-                                opsitambah = getche();
-                                if((opsitambah == 'Y') || (opsitambah == 'y')){
-                                    goto ulangbrg;
+                                ulangqty:
+                                printf("Silakan masukkan jumlah barang: ");
+                                scanf("%d",&qty);
+
+                                if(qty == 0){
+                                    printf("! Jumlah barang tidak boleh 0 !\n");
+                                    goto ulangqty;
                                 }else{
-                                    goto belanjalagi;
+                                    InsVLastB(cariP,brg,qty);
+                                    adabrg = true;
+                                    printf("Barang berhasil ditambahkan ke keranjang\n");
+                                    printf("Apakah anda ingin menambah barang lagi (y/n)? ");
+                                    opsitambah = getche();
+                                    if((opsitambah == 'Y') || (opsitambah == 'y')){
+                                        goto ulangbrg;
+                                    }else{
+                                        goto belanjalagi;
+                                    }
+                                    printf("Tekan apapun untuk melanjutkan...");
+                                    getch();                                    
                                 }
-                                printf("Tekan apapun untuk melanjutkan...");
-                                getch();                                    
                             }
+                            
                             break;
                         case 2:
                             if(!adabrg){
