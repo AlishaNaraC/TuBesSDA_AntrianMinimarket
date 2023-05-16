@@ -8,7 +8,7 @@
     Mata Kuliah : Struktur Data dan Algoritma
     Tugas       : Tugas Besar membuat program antrian pelanggan pada kassa di minimarket
     Tanggal     : 27 Maret 2023 s.d. 7 Mei 2023
-                  Update 9 Mei 2023 s.d.
+                  Update 9 Mei 2023 s.d. 13 Mei 2023
 */
 
 #ifndef spkasir_H
@@ -182,11 +182,16 @@ void DelFirstB (addressP P, addressB pel);						//keanu
 /* FS : jumlah barang atau qty berubah */
 void updateQty(addressP pel, infotype brg, int qty);            //keanu
 
+/* Mengirimkan true jika barang yang diinputkan benar ada di etalase,
+   dan false jika barang tidak ada di etalase*/
+bool cekB(infotype brg);                                        //alisha
+
 
 /* ==================== KEBUTUHAN LAINNYA ==================== */
-/* Mengirimkan infotype hasil alokasi sebuah elemen */
+/* Mengirimkan infotype hasil alokasi sebuah elemen untuk node barang*/
 infotype AlokasiInfo();                                         //alisha
 
+/* Mengirimkan infotype hasil alokasi sebuah elemen untuk node pelanggan*/
 infotype AlokasiInfoP();                                        //alisha
 
 /* IS : Terdapat ListK dan ListP yang sudah dibuat */
